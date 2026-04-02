@@ -1,33 +1,28 @@
-import java.util.Arrays;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        // Data MUST be sorted for Binary Search
-        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
-        String searchKey = "BG412";
+        String[] emptyTrain = {};
 
-        boolean found = binarySearch(bogieIds, searchKey);
-
-        System.out.println("Binary Search for " + searchKey + ": " + (found ? "Found" : "Not Found"));
+        try {
+            // This should trigger the exception
+            searchWithValidation(emptyTrain, "BG101");
+        } catch (IllegalStateException e) {
+            System.err.println("Validation Error: " + e.getMessage());
+        }
     }
 
-    // UC19: Binary Search Implementation
-    public static boolean binarySearch(String[] arr, String key) {
-        int low = 0;
-        int high = arr.length - 1;
-
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-            int comparison = key.compareTo(arr[mid]);
-
-            if (comparison == 0) {
-                return true; // Key found!
-            } else if (comparison > 0) {
-                low = mid + 1; // Key is in the right half
-            } else {
-                high = mid - 1; // Key is in the left half
-            }
+    // UC20: Defensive Search with State Validation
+    public static boolean searchWithValidation(String[] arr, String key) {
+        // Step 1: Check if the collection is empty (The State Check)
+        if (arr == null || arr.length == 0) {
+            throw new IllegalStateException("Search failed: No bogies available in the train consist.");
         }
-        return false; // Key not found
+
+        // Step 2: If not empty, perform the search (Reuse UC18 logic)
+        for (String id : arr) {
+            if (id.equals(key)) return true;
+        }
+        return false;
     }
 }
