@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 class Bogie {
@@ -11,6 +10,7 @@ class Bogie {
         this.capacity = capacity;
     }
 
+    public String getName() { return name; }
     public int getCapacity() { return capacity; }
 
     @Override
@@ -20,25 +20,24 @@ class Bogie {
 }
 
 public class Main {
-    // REFINEMENT: Extract logic to a method so JUnit can call it
-    public static List<Bogie> filterHighCapacity(List<Bogie> bogies, int threshold) {
-        return bogies.stream()
-                .filter(b -> b.getCapacity() > threshold)
-                .collect(Collectors.toList());
+    public static void main(String[] args) {
+        List<Bogie> bogies = new ArrayList<>();
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 56));
+        bogies.add(new Bogie("First Class", 24));
+
+        System.out.println("=== Grouped Bogies by Type ===");
+        Map<String, List<Bogie>> grouped = groupBogiesByType(bogies);
+
+        grouped.forEach((type, list) -> {
+            System.out.println(type + ": " + list);
+        });
     }
 
-    public static void main(String[] args) {
-        System.out.println("=== Train Consist Management App ===");
-
-        List<Bogie> passengerBogies = new ArrayList<>();
-        passengerBogies.add(new Bogie("Sleeper", 72));
-        passengerBogies.add(new Bogie("AC Chair", 56));
-        passengerBogies.add(new Bogie("First Class", 24));
-
-        // Call the method
-        List<Bogie> highCapacity = filterHighCapacity(passengerBogies, 60);
-
-        System.out.println("High capacity bogies (>60 seats):");
-        highCapacity.forEach(System.out::println);
+    // UC9 Logic: Grouping by Type
+    public static Map<String, List<Bogie>> groupBogiesByType(List<Bogie> bogies) {
+        return bogies.stream()
+                .collect(Collectors.groupingBy(Bogie::getName));
     }
 }
