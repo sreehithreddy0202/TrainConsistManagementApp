@@ -1,50 +1,41 @@
 import java.util.*;
-import java.util.stream.Collectors;
 
-class Bogie {
-    private String name;
+// Custom Exception Class
+class InvalidCapacityException extends Exception {
+    public InvalidCapacityException(String message) {
+        super(message);
+    }
+}
+
+class PassengerBogie {
+    private String type;
     private int capacity;
 
-    public Bogie(String name, int capacity) {
-        this.name = name;
+    // Constructor that throws the custom exception
+    public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
+        if (capacity <= 0) {
+            throw new InvalidCapacityException("Capacity must be greater than zero");
+        }
+        this.type = type;
         this.capacity = capacity;
     }
+
     public int getCapacity() { return capacity; }
+    public String getType() { return type; }
 }
 
 public class Main {
     public static void main(String[] args) {
-        List<Bogie> bogies = new ArrayList<>();
-        for (int i = 0; i < 1000; i++) {
-            bogies.add(new Bogie("Sleeper", i % 100));
+        try {
+            // Valid Case
+            PassengerBogie s1 = new PassengerBogie("Sleeper", 72);
+            System.out.println("Created: " + s1.getType() + " with " + s1.getCapacity() + " seats.");
+
+            // Invalid Case (This will trigger the catch block)
+            PassengerBogie s2 = new PassengerBogie("AC Chair", -5);
+
+        } catch (InvalidCapacityException e) {
+            System.err.println("Error: " + e.getMessage());
         }
-
-        // Loop Timing
-        long startLoop = System.nanoTime();
-        List<Bogie> loopResult = filterWithLoop(bogies, 60);
-        long endLoop = System.nanoTime();
-        System.out.println("Loop Time: " + (endLoop - startLoop) + " ns");
-
-        // Stream Timing
-        long startStream = System.nanoTime();
-        List<Bogie> streamResult = filterWithStream(bogies, 60);
-        long endStream = System.nanoTime();
-        System.out.println("Stream Time: " + (endStream - startStream) + " ns");
-    }
-
-    public static List<Bogie> filterWithLoop(List<Bogie> bogies, int threshold) {
-        List<Bogie> filtered = new ArrayList<>();
-        for (Bogie b : bogies) {
-            if (b.getCapacity() > threshold) {
-                filtered.add(b);
-            }
-        }
-        return filtered;
-    }
-
-    public static List<Bogie> filterWithStream(List<Bogie> bogies, int threshold) {
-        return bogies.stream()
-                .filter(b -> b.getCapacity() > threshold)
-                .collect(Collectors.toList());
     }
 }
