@@ -1,37 +1,50 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
-class GoodsBogie {
-    private String type;
-    private String cargo;
+class Bogie {
+    private String name;
+    private int capacity;
 
-    public GoodsBogie(String type, String cargo) {
-        this.type = type;
-        this.cargo = cargo;
+    public Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
     }
-
-    public String getType() { return type; }
-    public String getCargo() { return cargo; }
+    public int getCapacity() { return capacity; }
 }
 
 public class Main {
     public static void main(String[] args) {
-        List<GoodsBogie> goodsTrain = new ArrayList<>();
-        goodsTrain.add(new GoodsBogie("Cylindrical", "Petroleum"));
-        goodsTrain.add(new GoodsBogie("Open", "Coal"));
+        List<Bogie> bogies = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            bogies.add(new Bogie("Sleeper", i % 100));
+        }
 
-        boolean isSafe = checkSafetyCompliance(goodsTrain);
-        System.out.println("Train Safety Compliance: " + (isSafe ? "PASS" : "FAIL"));
+        // Loop Timing
+        long startLoop = System.nanoTime();
+        List<Bogie> loopResult = filterWithLoop(bogies, 60);
+        long endLoop = System.nanoTime();
+        System.out.println("Loop Time: " + (endLoop - startLoop) + " ns");
+
+        // Stream Timing
+        long startStream = System.nanoTime();
+        List<Bogie> streamResult = filterWithStream(bogies, 60);
+        long endStream = System.nanoTime();
+        System.out.println("Stream Time: " + (endStream - startStream) + " ns");
     }
 
-    // UC12 Logic: Safety Rule Enforcement
-    public static boolean checkSafetyCompliance(List<GoodsBogie> bogies) {
-        return bogies.stream().allMatch(b -> {
-            // Rule: If it's Cylindrical, it MUST be Petroleum.
-            if (b.getType().equalsIgnoreCase("Cylindrical")) {
-                return b.getCargo().equalsIgnoreCase("Petroleum");
+    public static List<Bogie> filterWithLoop(List<Bogie> bogies, int threshold) {
+        List<Bogie> filtered = new ArrayList<>();
+        for (Bogie b : bogies) {
+            if (b.getCapacity() > threshold) {
+                filtered.add(b);
             }
-            // Other types (Open, Box, etc.) are always considered safe for now.
-            return true;
-        });
+        }
+        return filtered;
+    }
+
+    public static List<Bogie> filterWithStream(List<Bogie> bogies, int threshold) {
+        return bogies.stream()
+                .filter(b -> b.getCapacity() > threshold)
+                .collect(Collectors.toList());
     }
 }
