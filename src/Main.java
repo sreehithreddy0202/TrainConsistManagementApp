@@ -1,25 +1,37 @@
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import java.util.*;
+
+class GoodsBogie {
+    private String type;
+    private String cargo;
+
+    public GoodsBogie(String type, String cargo) {
+        this.type = type;
+        this.cargo = cargo;
+    }
+
+    public String getType() { return type; }
+    public String getCargo() { return cargo; }
+}
 
 public class Main {
     public static void main(String[] args) {
-        // Example usage
-        String trainId = "TRN-1234";
-        String cargoCode = "PET-AB";
+        List<GoodsBogie> goodsTrain = new ArrayList<>();
+        goodsTrain.add(new GoodsBogie("Cylindrical", "Petroleum"));
+        goodsTrain.add(new GoodsBogie("Open", "Coal"));
 
-        System.out.println("Train ID " + trainId + " is valid: " + validateTrainID(trainId));
-        System.out.println("Cargo Code " + cargoCode + " is valid: " + validateCargoCode(cargoCode));
+        boolean isSafe = checkSafetyCompliance(goodsTrain);
+        System.out.println("Train Safety Compliance: " + (isSafe ? "PASS" : "FAIL"));
     }
 
-    // UC11: Validate Train ID (Format: TRN- followed by exactly 4 digits)
-    public static boolean validateTrainID(String trainId) {
-        String regex = "^TRN-\\d{4}$";
-        return Pattern.compile(regex).matcher(trainId).matches();
-    }
-
-    // UC11: Validate Cargo Code (Format: PET- followed by exactly 2 uppercase letters)
-    public static boolean validateCargoCode(String cargoCode) {
-        String regex = "^PET-[A-Z]{2}$";
-        return Pattern.compile(regex).matcher(cargoCode).matches();
+    // UC12 Logic: Safety Rule Enforcement
+    public static boolean checkSafetyCompliance(List<GoodsBogie> bogies) {
+        return bogies.stream().allMatch(b -> {
+            // Rule: If it's Cylindrical, it MUST be Petroleum.
+            if (b.getType().equalsIgnoreCase("Cylindrical")) {
+                return b.getCargo().equalsIgnoreCase("Petroleum");
+            }
+            // Other types (Open, Box, etc.) are always considered safe for now.
+            return true;
+        });
     }
 }
