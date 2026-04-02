@@ -1,19 +1,20 @@
-import java.util.Arrays;
-
 public class Main {
     public static void main(String[] args) {
-        String[] bogieNames = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
+        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        String searchKey = "BG309";
 
-        System.out.println("Before Sorting: " + Arrays.toString(bogieNames));
+        boolean found = linearSearch(bogieIds, searchKey);
 
-        // UC17: Using Java's built-in optimized sorting
-        sortBogieNames(bogieNames);
-
-        System.out.println("After Arrays.sort(): " + Arrays.toString(bogieNames));
+        System.out.println("Search for " + searchKey + ": " + (found ? "Found" : "Not Found"));
     }
 
-    // Logic for UC17
-    public static void sortBogieNames(String[] names) {
-        Arrays.sort(names);
+    // UC18: Linear Search Implementation
+    public static boolean linearSearch(String[] arr, String key) {
+        for (String id : arr) {
+            if (id.equals(key)) {
+                return true; // Early termination: stop as soon as it's found
+            }
+        }
+        return false; // Traversed the whole list and found nothing
     }
 }
