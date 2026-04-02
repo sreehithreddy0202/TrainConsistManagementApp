@@ -1,57 +1,28 @@
-import java.util.*;
-
-// UC15: Custom Runtime Exception
-class CargoSafetyException extends RuntimeException {
-    public CargoSafetyException(String message) {
-        super(message);
-    }
-}
-
-class GoodsBogie {
-    private String shape;
-    private String cargo;
-
-    public GoodsBogie(String shape) {
-        this.shape = shape;
-        this.cargo = "Empty";
-    }
-
-    public String getShape() { return shape; }
-    public String getCargo() { return cargo; }
-
-    // UC15: Business logic for assignment with exception handling
-    public void assignCargo(String newCargo) {
-        try {
-            System.out.println("Validating assignment: " + newCargo + " to " + shape + " bogie.");
-
-            // Safety Rule: Petroleum cannot go into Rectangular bogies
-            if (shape.equalsIgnoreCase("Rectangular") && newCargo.equalsIgnoreCase("Petroleum")) {
-                throw new CargoSafetyException("UNSAFE: Petroleum cannot be assigned to a Rectangular bogie!");
-            }
-
-            this.cargo = newCargo;
-            System.out.println("Assignment Successful: " + newCargo);
-
-        } catch (CargoSafetyException e) {
-            System.err.println("Caught Exception: " + e.getMessage());
-        } finally {
-            // This block always runs
-            System.out.println("Cargo validation process completed for this bogie.");
-        }
-    }
-}
+import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        GoodsBogie b1 = new GoodsBogie("Cylindrical");
-        b1.assignCargo("Petroleum"); // Should pass
+        int[] capacities = {72, 56, 24, 70, 60};
 
-        System.out.println("---");
+        System.out.println("Before Sorting: " + Arrays.toString(capacities));
 
-        GoodsBogie b2 = new GoodsBogie("Rectangular");
-        b2.assignCargo("Petroleum"); // Should fail and be caught
+        bubbleSort(capacities);
 
-        System.out.println("---");
-        System.out.println("Program continues running safely...");
+        System.out.println("After Bubble Sort: " + Arrays.toString(capacities));
+    }
+
+    // UC16: Manual Bubble Sort Algorithm
+    public static void bubbleSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                // If the left element is greater than the right, swap them
+                if (arr[j] > arr[j + 1]) {
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
     }
 }
