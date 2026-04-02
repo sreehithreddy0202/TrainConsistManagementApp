@@ -1,41 +1,25 @@
-import java.util.*;
-import java.util.stream.Collectors;
-
-class Bogie {
-    private String name;
-    private int capacity;
-
-    public Bogie(String name, int capacity) {
-        this.name = name;
-        this.capacity = capacity;
-    }
-
-    public String getName() { return name; }
-    public int getCapacity() { return capacity; }
-
-    @Override
-    public String toString() {
-        return name + " (" + capacity + " seats)";
-    }
-}
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class Main {
     public static void main(String[] args) {
-        List<Bogie> bogies = new ArrayList<>();
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("AC Chair", 56));
-        bogies.add(new Bogie("First Class", 24));
+        // Example usage
+        String trainId = "TRN-1234";
+        String cargoCode = "PET-AB";
 
-        int totalSeats = calculateTotalSeats(bogies);
-
-        System.out.println("=== Train Capacity Report ===");
-        System.out.println("Total Seating Capacity: " + totalSeats);
+        System.out.println("Train ID " + trainId + " is valid: " + validateTrainID(trainId));
+        System.out.println("Cargo Code " + cargoCode + " is valid: " + validateCargoCode(cargoCode));
     }
 
-    // UC10 Logic: Aggregation using map and reduce
-    public static int calculateTotalSeats(List<Bogie> bogies) {
-        return bogies.stream()
-                .map(Bogie::getCapacity) // Extract capacities
-                .reduce(0, Integer::sum); // Sum them up starting from 0
+    // UC11: Validate Train ID (Format: TRN- followed by exactly 4 digits)
+    public static boolean validateTrainID(String trainId) {
+        String regex = "^TRN-\\d{4}$";
+        return Pattern.compile(regex).matcher(trainId).matches();
+    }
+
+    // UC11: Validate Cargo Code (Format: PET- followed by exactly 2 uppercase letters)
+    public static boolean validateCargoCode(String cargoCode) {
+        String regex = "^PET-[A-Z]{2}$";
+        return Pattern.compile(regex).matcher(cargoCode).matches();
     }
 }
