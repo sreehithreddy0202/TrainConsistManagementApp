@@ -23,21 +23,19 @@ public class Main {
     public static void main(String[] args) {
         List<Bogie> bogies = new ArrayList<>();
         bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 56));
         bogies.add(new Bogie("First Class", 24));
 
-        System.out.println("=== Grouped Bogies by Type ===");
-        Map<String, List<Bogie>> grouped = groupBogiesByType(bogies);
+        int totalSeats = calculateTotalSeats(bogies);
 
-        grouped.forEach((type, list) -> {
-            System.out.println(type + ": " + list);
-        });
+        System.out.println("=== Train Capacity Report ===");
+        System.out.println("Total Seating Capacity: " + totalSeats);
     }
 
-    // UC9 Logic: Grouping by Type
-    public static Map<String, List<Bogie>> groupBogiesByType(List<Bogie> bogies) {
+    // UC10 Logic: Aggregation using map and reduce
+    public static int calculateTotalSeats(List<Bogie> bogies) {
         return bogies.stream()
-                .collect(Collectors.groupingBy(Bogie::getName));
+                .map(Bogie::getCapacity) // Extract capacities
+                .reduce(0, Integer::sum); // Sum them up starting from 0
     }
 }
